@@ -63,6 +63,8 @@
         <filtering>false</filtering>
         <includes>
           <include>LICENSE</include>
+          <include>NOTICE</include>
+          <include>README</include>
         </includes>
       </resource>
     </resources>
