@@ -25,8 +25,7 @@ class DECMCSDecoder extends CharsetDecoder {
   private static final char[] CODE_PAGE = new char[256];
 
   static {
-    // Most of the DEC-MCS characters are the same value as Java 'char' (i.e.
-    // UTF-16)
+    // Most of the DEC-MCS characters are the same value as Java 'char' (i.e. UTF-16)
     for (int i = 0x00; i <= 0xFF; i++) {
       CODE_PAGE[i] = (char) i;
     }
