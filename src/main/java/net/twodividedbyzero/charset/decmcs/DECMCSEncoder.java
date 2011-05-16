@@ -66,8 +66,10 @@ class DECMCSEncoder extends CharsetEncoder {
             return CoderResult.unmappableForLength(1);
           case '\u00A4':
             out.put((byte) '\u00A8');
+            break;
           case '\u00FF':
             out.put((byte) '\u00FD');
+            break;
           default:
             out.put((byte) c);
             break;
