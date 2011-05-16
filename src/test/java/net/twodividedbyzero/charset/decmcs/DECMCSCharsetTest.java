@@ -15,7 +15,9 @@
  */
 package net.twodividedbyzero.charset.decmcs;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -25,6 +27,25 @@ import org.junit.Test;
 
 public class DECMCSCharsetTest {
 
+  @Test
+  public void testContainsNull() throws Exception {
+    final Charset cs = new DECMCSCharset();
+    assertThat(cs.contains(null), is(false));
+  }
+
+  @Test
+  public void testContainsItself() throws Exception {
+    final Charset cs = new DECMCSCharset();
+    assertThat(cs.contains(cs), is(true));
+  }
+
+  @Test
+  public void testContainsUSASCII() throws Exception {
+    final Charset cs = new DECMCSCharset();
+    final Charset usascii = Charset.forName("US-ASCII");
+    assertThat(cs.contains(usascii), is(true));
+  }
+  
   @Test
   public void testEncodeString() {
     Charset cs = new DECMCSCharset();

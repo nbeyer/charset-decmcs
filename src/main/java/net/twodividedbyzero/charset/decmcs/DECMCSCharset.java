@@ -33,9 +33,18 @@ public class DECMCSCharset extends Charset {
 
   @Override
   public boolean contains(Charset cs) {
-    if (cs != null
-        && (IANA_NAME.equalsIgnoreCase(cs.name()) || "US-ASCII"
-            .equalsIgnoreCase(cs.name()))) {
+    if (cs == null) {
+      return false;
+    }
+    
+    // DEC-MCS contains itself
+    if (IANA_NAME.equalsIgnoreCase(cs.name())) {
+      return true;
+    }
+    
+    // DEC-MCS contains US-ASCII
+    // US-ASCII is the preferred MIME name, so that's what Charset.name() will be
+    if ("US-ASCII".equalsIgnoreCase(cs.name())) {
       return true;
     }
 
