@@ -88,7 +88,11 @@ class DECMCSEncoder extends CharsetEncoder {
           default:
             if (c >= '\uD800') {
               if (Character.isHighSurrogate(c)) {
-                // TODO consider underflow
+                if (!in.hasRemaining()) {
+                  in.position(in.position() - 1);
+                  return CoderResult.unmappableForLength(1);
+                }
+                
                 char cNext = in.get();
                 in.position(in.position() - 2);
                 if (Character.isLowSurrogate(cNext)) {
@@ -101,8 +105,8 @@ class DECMCSEncoder extends CharsetEncoder {
                 return CoderResult.unmappableForLength(1);
               }
             }
-            out.put((byte) c);
-            break;
+            in.position(in.position() - 1);
+            return CoderResult.unmappableForLength(1);
         }
       }
     }

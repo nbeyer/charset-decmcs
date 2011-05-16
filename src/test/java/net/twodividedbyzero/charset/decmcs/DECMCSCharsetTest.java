@@ -16,6 +16,7 @@
 package net.twodividedbyzero.charset.decmcs;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -107,27 +108,65 @@ public class DECMCSCharsetTest {
 
   @Test
   public void testEncodeStringA0toFFSameAsISO88591() throws Exception {
-    final char[] exclude = { '\u00A0', '\u00A4', '\u00A6', '\u00A8', '\u00AC', '\u00AD', '\u00AE', '\u00AF', '\u00B4', '\u00B8',
-        '\u00BE', '\u00D0', '\u00D7', '\u00DD', '\u00DE', '\u00F0', '\u00F7', '\u00FD', '\u00FE', '\u00FF' };
+    final char[] exclude = { '\u00A0', '\u00A4', '\u00A6', '\u00A8', '\u00AC', '\u00AD', '\u00AE', '\u00AF', '\u00B4',
+        '\u00B8', '\u00BE', '\u00D0', '\u00D7', '\u00DD', '\u00DE', '\u00F0', '\u00F7', '\u00FD', '\u00FE', '\u00FF' };
 
     final char[] charsA0ToFF = new char[76];
     final byte[] bytesA0ToFF = new byte[76];
     for (char c = '\u00A0', i = '\u0000'; c <= '\u00FF'; c++) {
       if (Arrays.binarySearch(exclude, c) < 0) {
         charsA0ToFF[i] = c;
-        bytesA0ToFF[i] = (byte)c;
+        bytesA0ToFF[i] = (byte) c;
         i++;
       }
     }
-    
+
     final Charset cs = new DECMCSCharset();
-    
+
     final String stringA0ToFF = new String(charsA0ToFF);
     assertThat(stringA0ToFF.length(), is(76));
     final ByteBuffer result = cs.encode(stringA0ToFF);
     final byte[] resultBytes = result.array();
     for (int i = 0; i < 76; i++) {
       assertThat("bytes don't match at index " + i, resultBytes[i], is(bytesA0ToFF[i]));
+    }
+  }
+
+  @Test
+  public void testEncodeStringCharsOutsideISO88591() throws Exception {
+    final Charset cs = new DECMCSCharset();
+
+    final String u0152 = "\u0152";
+    ByteBuffer result = cs.encode(u0152);
+    byte[] resultBytes = result.array();
+    assertThat(resultBytes.length, is(1));
+    assertThat(resultBytes[0], is((byte) 0xD7));
+
+    final String u0153 = "\u0153";
+    result = cs.encode(u0153);
+    resultBytes = result.array();
+    assertThat(resultBytes.length, is(1));
+    assertThat(resultBytes[0], is((byte) 0xF7));
+
+    final String u0178 = "\u0178";
+    result = cs.encode(u0178);
+    resultBytes = result.array();
+    assertThat(resultBytes.length, is(1));
+    assertThat(resultBytes[0], is((byte) 0xDD));
+  }
+
+  @Test
+  public void testEncodeStringFFandBeyondUnmappable() throws Exception {
+    final Charset cs = new DECMCSCharset();
+    final char[] exclude = { '\u0152', '\u0153', '\u0178' };
+
+    for (char c = '\u0100'; c < Character.MAX_VALUE; c++) {
+      if (Arrays.binarySearch(exclude, c) < 0) {
+        ByteBuffer result = cs.encode(CharBuffer.wrap(new char[] { c }));
+        byte[] resultBytes = result.array();
+        assertThat(resultBytes.length, is(1));
+        assertThat("bytes don't match at char [" + c + "]", resultBytes[0], is((byte) 0x3F));
+      }
     }
   }
 
