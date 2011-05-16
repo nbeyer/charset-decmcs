@@ -32,6 +32,10 @@
       <url>LICENSE</url>
     </license>
   </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/nbeyer/charset-decmcs.git</connection>
+    <url>http://github.com/nbeyer/charset-decmcs</url>
+  </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
