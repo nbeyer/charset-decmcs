@@ -45,6 +45,13 @@ public class DECMCSCharsetTest {
     final Charset usascii = Charset.forName("US-ASCII");
     assertThat(cs.contains(usascii), is(true));
   }
+
+  @Test
+  public void testContainsISO88591() throws Exception {
+    final Charset cs = new DECMCSCharset();
+    final Charset iso88591 = Charset.forName("ISO-8859-1");
+    assertThat(cs.contains(iso88591), is(false));
+  }
   
   @Test
   public void testEncodeString() {
