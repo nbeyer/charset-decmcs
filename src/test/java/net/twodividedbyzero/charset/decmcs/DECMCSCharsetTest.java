@@ -54,7 +54,7 @@ public class DECMCSCharsetTest {
   }
   
   @Test
-  public void testEncodeString() {
+  public void testEncodeString00to9F() {
     Charset cs = new DECMCSCharset();
 
     char[] chars00To9F = new char[160];
