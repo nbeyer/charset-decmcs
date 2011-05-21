@@ -169,6 +169,24 @@ public class DECMCSCharsetTest {
       }
     }
   }
+  
+  @Test
+  public void testEncodeSupplementaryCharactersComparedToIS088591() throws Exception {
+    final Charset decmcs = new DECMCSCharset();
+    final Charset iso88591 = Charset.forName("ISO-8859-1");
+    
+    for (int i = 0x1000; i <= Character.MAX_CODE_POINT; i++) {
+      final String s = new String(new int[] {i}, 0, 1);
+      ByteBuffer decmcsResult = decmcs.encode(s);
+      byte[] decmcsResultBytes = decmcsResult.array();
+      ByteBuffer iso88591Result = iso88591.encode(s);
+      byte[] iso88591ResultBytes = iso88591Result.array();
+      assertThat(iso88591ResultBytes.length, is(decmcsResultBytes.length));
+      for (int j = 0; j < iso88591ResultBytes.length; j++) {
+        assertThat("bytes don't match at index " + j + " for code point " + i, iso88591ResultBytes[j], is(decmcsResultBytes[j]));
+      }
+    }
+  }
 
   @Test
   public void testDecode() {
